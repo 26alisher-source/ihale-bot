@@ -1,24 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Goszakup Takip</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goszakup Tender Takip</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: white; text-align: center; padding: 20px; }
-        button { background: #248b65; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; color: #333; }
+        .header { text-align: center; margin-bottom: 20px; color: #248b65; }
+        .tender-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #248b65; }
+        .tender-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; display: block; }
+        .tender-price { color: #e67e22; font-weight: bold; font-size: 18px; }
+        .tender-info { font-size: 13px; color: #666; margin-top: 5px; }
+        .refresh-btn { background: #248b65; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h2>Goszakup İhale Takip</h2>
-    <p id="user-name">Yükleniyor...</p>
-    <button onclick="tg.close()">Uygulamayı Kapat</button>
+    <div class="header">
+        <h2 id="welcome-msg">Hoş geldin!</h2>
+        <p>Güncel İhaleler (Demo Verisi)</p>
+    </div>
+
+    <div id="tender-list">
+        <div class="tender-card">
+            <span class="tender-title">Okul İnşaatı Bakım Onarım İşi</span>
+            <span class="tender-price">15,000,000 ₸</span>
+            <div class="tender-info">Bitiş: 25.02.2026 | Bölge: Almatı</div>
+        </div>
+        <div class="tender-card">
+            <span class="tender-title">Tıbbi Cihaz Alımı (MR Cihazı)</span>
+            <span class="tender-price">85,400,000 ₸</span>
+            <div class="tender-info">Bitiş: 01.03.2026 | Bölge: Astana</div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="location.reload()">İhaleleri Güncelle</button>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Uygulamayı tam ekran açar
-        // Telegram'dan kullanıcı adını çekip ekrana yazalım
-        document.getElementById("user-name").innerText = "Hoş geldin, " + tg.initDataUnsafe.user.first_name;
+        tg.expand();
+        document.getElementById("welcome-msg").innerText = "Hoş geldin, " + (tg.initDataUnsafe.user?.first_name || "Kullanıcı");
     </script>
 </body>
 </html>
