@@ -4,11 +4,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) # Web sayfasının bota erişmesine izin verir
+CORS(app) # Vercel sayfasının bilgisayarına ulaşmasına izin verir
 
 def get_goszakup_data(city, keyword, status):
-    # Dinamik Filtreleme: Seçtiğin şehri (Kato) ve kelimeyi URL'ye ekler
-    print(f"🔍 Canlı Sorgu: {city} | {keyword}")
+    # Senin istediğin 4 veriyi çekmek için dinamik arama motoru
+    print(f"🔍 Sorgulanıyor: {city} | Kelime: {keyword}")
     url = f"https://goszakup.gov.kz/ru/search/anno?filter[kato]={city}&filter[name]={keyword}&filter[status]={status}"
     headers = {'User-Agent': 'Mozilla/5.0'}
     
@@ -21,7 +21,6 @@ def get_goszakup_data(city, keyword, status):
         for row in rows:
             cols = row.find_all('td')
             if len(cols) > 5:
-                # Kymbat'ın İstediği 4 Veri
                 tenders.append({
                     "price": cols[5].text.strip(), # 1. İhale Değeri
                     "title": cols[3].text.strip(), # 2. İhale İsmi
@@ -29,8 +28,7 @@ def get_goszakup_data(city, keyword, status):
                     "status": "Завершен" if status == "350" else "Опубликован" # 4. Durum
                 })
         return tenders
-    except Exception as e:
-        print(f"Hata oluştu: {e}")
+    except:
         return []
 
 @app.route('/search', methods=['POST'])
@@ -40,5 +38,4 @@ def search():
     return jsonify(results)
 
 if __name__ == "__main__":
-    # Botu 5000 portunda başlatır
-    app.run(port=5000)
+    app.run(port=5000) #
