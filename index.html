@@ -27,7 +27,7 @@
     </div>
     <div class="input-group">
         <span class="section-label">Наименование</span>
-        <input type="text" id="searchInput" placeholder="Например: ремонт">
+        <input type="text" id="searchInput" placeholder="Например: ремонт" value="ремонт">
     </div>
     <div class="input-group">
         <span class="section-label">Статус</span>
@@ -43,28 +43,33 @@
 <script>
     async function fetchData() {
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = "<p>Загрузка...</p>";
+        resultsDiv.innerHTML = "<p style='text-align:center'>Поиск в Goszakup...</p>";
+        
         const filters = {
             city: document.getElementById('cityInput').value,
             keyword: document.getElementById('searchInput').value,
             status: document.getElementById('statusSelect').value
         };
+
         try {
-            // Bilgisayarındaki bota (Port 5000) bağlanıyor
+            // Bilgisayarındaki yerel bota bağlanmayı dener
             const response = await fetch('http://127.0.0.1:5000/search', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(filters)
             });
             const data = await response.json();
+            
             resultsDiv.innerHTML = data.map(t => `
                 <div class="tender-card">
                     <div class="price">${t.price} ₸</div>
-                    <div class="title" style="font-size:14px; margin:8px 0;">${t.title}</div>
-                    <div style="font-size:12px; color:gray;">№: ${t.no} | Статус: ${t.status}</div>
+                    <div style="font-size:14px; margin:8px 0; font-weight:600;">${t.title}</div>
+                    <div style="font-size:12px; color:gray; border-top:1px solid #eee; padding-top:8px;">
+                        №: ${t.no} | Статус: ${t.status}
+                    </div>
                 </div>`).join('');
         } catch (e) {
-            resultsDiv.innerHTML = "<p style='color:red'>Ошибка: Убедитесь, что bot.py запущен в терминале!</p>";
+            resultsDiv.innerHTML = "<p style='color:red; text-align:center;'>Hata: bot.py çalışmıyor! Lütfen terminali kontrol edin.</p>";
         }
     }
 </script>
