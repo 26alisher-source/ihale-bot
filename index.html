@@ -10,87 +10,34 @@
         h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 25px; color: #101828; }
         .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; margin-bottom: 8px; display: block; }
         .input-group { margin-bottom: 20px; }
-        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; outline: none; box-sizing: border-box; background-color: #FCFCFD; color: #101828; }
-        input:focus, select:focus { border-color: #007AFF; box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
-        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; width: 100%; }
-        #results { width: 100%; max-width: 480px; margin-top: 20px; }
-        .ihale-card { background: white; padding: 18px; border-radius: 18px; margin-bottom: 12px; border-left: 6px solid #12B76A; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; outline: none; box-sizing: border-box; background-color: #FCFCFD; }
+        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; }
+        #results-container { width: 100%; max-width: 480px; margin-top: 20px; }
+        .tender-card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 12px; border-left: 6px solid #12B76A; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .price { font-weight: 800; color: #027A48; font-size: 19px; }
+        .title { font-size: 14px; color: #344054; margin: 8px 0; font-weight: 600; }
+        .meta-info { font-size: 12px; color: #667085; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #F2F4F7; padding-top: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="app-card">
     <h2>Поиск объявлений 🔍</h2>
-
     <div class="input-group">
         <span class="section-label">Место поставки (КАТО)</span>
         <input type="text" id="cityInput" placeholder="Введите город" list="kato-list" value="г. Караганда">
         <datalist id="kato-list">
-            <option value="г. Астана">
-            <option value="г. Алматы">
-            <option value="г. Шымкент">
-            <option value="г. Караганда">
-            <option value="г. Кызылорда">
-            <option value="Карагандинская область">
-            <option value="Кызылординская область">
+            <option value="г. Астана"><option value="г. Алматы"><option value="г. Караганда">
+            <option value="г. Кызылорда"><option value="Карагандинская область">
         </datalist>
     </div>
-
     <div class="input-group">
         <span class="section-label">Наименование объявления</span>
-        <input type="text" id="searchInput" value="средний ремонт дорог">
+        <input type="text" id="searchInput" placeholder="Например: ремонт">
     </div>
-
     <div class="input-group">
         <span class="section-label">Статус</span>
         <select id="statusSelect">
             <option value="350">Завершено</option>
             <option value="210">Опубликовано</option>
-            <option value="220">Прием заявок</option>
-            <option value="440">Отменено</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <span class="section-label">Способ закупки</span>
-        <select id="methodSelect">
-            <option value="2">Открытый конкурс</option>
-            <option value="3">Запрос ценовых предложений</option>
-            <option value="188">Из одного источника</option>
-            <option value="1">Аукцион</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <span class="section-label">Сумма закупки по (₸)</span>
-        <input type="number" id="budgetInput" value="500000000">
-    </div>
-
-    <button class="search-btn" onclick="getResults()">Показать результаты</button>
-</div>
-
-<div id="results"></div>
-
-<script>
-    function getResults() {
-        const container = document.getElementById('results');
-        // Bot verilerini simüle ediyoruz
-        const data = [
-            {"no": "8878842-1", "title": "Средний ремонт дорог города Караганда", "price": "122 841 100 ₸", "date": "27.01.2023"},
-            {"no": "8881325-1", "title": "Работы по ремонту и содержанию дорог", "price": "104 093 280 ₸", "date": "25.01.2023"}
-        ];
-
-        let html = "";
-        data.forEach(item => {
-            html += `<div class="ihale-card">
-                <div style="font-weight:800; color:#027A48; font-size:18px;">${item.price}</div>
-                <div style="font-size:14px; color:#344054; margin-top:5px;">${item.title}</div>
-                <div style="font-size:12px; color:#667085; margin-top:10px;">№: ${item.no} | Срок: ${item.date}</div>
-            </div>`;
-        });
-        container.innerHTML = html;
-    }
-</script>
-
-</body>
-</html>
+            <option value="220">
