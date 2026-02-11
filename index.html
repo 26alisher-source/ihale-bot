@@ -1,45 +1,110 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goszakup Tender Takip</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Alaman - Поиск объявлений</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; color: #333; }
-        .header { text-align: center; margin-bottom: 20px; color: #248b65; }
-        .tender-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #248b65; }
-        .tender-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; display: block; }
-        .tender-price { color: #e67e22; font-weight: bold; font-size: 18px; }
-        .tender-info { font-size: 13px; color: #666; margin-top: 5px; }
-        .refresh-btn { background: #248b65; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #F2F4F7; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .app-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 480px; }
+        h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 25px; color: #101828; }
+        
+        .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+        .input-group { margin-bottom: 20px; }
+        
+        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; outline: none; box-sizing: border-box; background-color: #FCFCFD; color: #101828; }
+        input:focus, select:focus { border-color: #007AFF; box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
+        
+        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .search-btn:active { transform: scale(0.98); }
+
+        #sonuclar { width: 100%; max-width: 480px; margin-top: 20px; }
+        .ihale-card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 12px; border-left: 6px solid #12B76A; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .price { font-weight: 800; color: #027A48; font-size: 19px; }
+        .title { font-size: 14px; color: #344054; margin-top: 6px; font-weight: 600; }
+        .details { font-size: 12px; color: #667085; margin-top: 12px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 id="welcome-msg">Hoş geldin!</h2>
-        <p>Güncel İhaleler (Demo Verisi)</p>
+
+<div class="app-card">
+    <h2>Поиск объявлений 🔍</h2>
+
+    <div class="input-group">
+        <span class="section-label">Место поставки (КАТО)</span>
+        <input type="text" id="cityInput" placeholder="Введите город или область" list="kato-list" value="г. Караганда">
+        <datalist id="kato-list">
+            <option value="г. Астана">
+            <option value="г. Алматы">
+            <option value="г. Шымкент">
+            <option value="г. Караганда">
+            <option value="г. Кызылорда">
+            <option value="Карагандинская область">
+            <option value="Кызылординская область">
+            <option value="Акмолинская область">
+            <option value="Мангистауская область">
+        </datalist>
     </div>
 
-    <div id="tender-list">
-        <div class="tender-card">
-            <span class="tender-title">Okul İnşaatı Bakım Onarım İşi</span>
-            <span class="tender-price">15,000,000 ₸</span>
-            <div class="tender-info">Bitiş: 25.02.2026 | Bölge: Almatı</div>
-        </div>
-        <div class="tender-card">
-            <span class="tender-title">Tıbbi Cihaz Alımı (MR Cihazı)</span>
-            <span class="tender-price">85,400,000 ₸</span>
-            <div class="tender-info">Bitiş: 01.03.2026 | Bölge: Astana</div>
-        </div>
+    <div class="input-group">
+        <span class="section-label">Наименование объявления</span>
+        <input type="text" id="searchInput" value="средний ремонт дорог">
     </div>
 
-    <button class="refresh-btn" onclick="location.reload()">İhaleleri Güncelle</button>
+    <div class="input-group">
+        <span class="section-label">Статус</span>
+        <select id="statusSelect">
+            <option value="350">Завершено</option>
+            <option value="210">Опубликовано</option>
+            <option value="220">Прием заявок</option>
+            <option value="440">Отменено</option>
+        </select>
+    </div>
 
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        document.getElementById("welcome-msg").innerText = "Hoş geldin, " + (tg.initDataUnsafe.user?.first_name || "Kullanıcı");
-    </script>
+    <div class="input-group">
+        <span class="section-label">Способ закупки</span>
+        <select id="methodSelect">
+            <option value="2">Открытый конкурс</option>
+            <option value="3">Запрос ценовых предложений</option>
+            <option value="188">Из одного источника путем прямого заключения договора</option>
+            <option value="1">Аукцион</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <span class="section-label">Сумма закупки по (₸)</span>
+        <input type="number" id="budgetInput" value="500000000">
+    </div>
+
+    <button class="search-btn" onclick="showResults()">Показать результаты</button>
+</div>
+
+<div id="sonuclar"></div>
+
+<script>
+    function showResults() {
+        const container = document.getElementById('sonuclar');
+        // Данные из терминала
+        const data = [
+            {"no": "8878842-1", "title": "Средний ремонт дорог города Караганда", "price": "122 841 100 ₸", "date": "27.01.2023"},
+            {"no": "8881325-1", "title": "Работы по ремонту и содержанию дорог", "price": "104 093 280 ₸", "date": "25.01.2023"}
+        ];
+
+        let html = "";
+        data.forEach(item => {
+            html += `
+                <div class="ihale-card">
+                    <div class="price">${item.price}</div>
+                    <div class="title">${item.title}</div>
+                    <div class="details">
+                        <span>№: ${item.no}</span>
+                        <span>Срок: ${item.date}</span>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+</script>
+
 </body>
 </html>
