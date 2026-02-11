@@ -4,74 +4,71 @@
     <meta charset="UTF-8">
     <title>Alaman - Поиск объявлений</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #F2F4F7; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Inter', sans-serif; background: #F2F4F7; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .app-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 480px; }
-        h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 25px; color: #101828; }
         .input-group { margin-bottom: 20px; }
-        .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; box-sizing: border-box; background: #FCFCFD; }
-        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; box-sizing: border-box; }
+        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; }
         .tender-card { background: white; padding: 20px; border-radius: 18px; margin-top: 12px; border-left: 6px solid #12B76A; width: 100%; max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .price { font-weight: 800; color: #027A48; font-size: 19px; }
     </style>
 </head>
 <body>
-<div class="app-card">
-    <h2>Поиск объявлений 🔍</h2>
-    <div class="input-group">
-        <span class="section-label">Место поставки (КАТО)</span>
-        <input type="text" id="cityInput" list="kato-list" placeholder="Введите город" value="г. Кызылорда">
-        <datalist id="kato-list">
-            <option value="г. Астана"><option value="г. Алматы"><option value="г. Караганда"><option value="г. Кызылорда">
-        </datalist>
+    <div class="app-card">
+        <h2 style="text-align:center">Поиск объявлений 🔍</h2>
+        <div class="input-group">
+            <span class="section-label">Место поставки (КАТО)</span>
+            <input type="text" id="cityInput" list="kato-list" value="г. Кызылоrda">
+            <datalist id="kato-list">
+                <option value="г. Астана"><option value="г. Алматы"><option value="г. Караганда"><option value="г. Кызылорда">
+            </datalist>
+        </div>
+        <div class="input-group">
+            <span class="section-label">Наименование</span>
+            <input type="text" id="searchInput" placeholder="Например: ремонт">
+        </div>
+        <div class="input-group">
+            <span class="section-label">Статус</span>
+            <select id="statusSelect">
+                <option value="350">Завершено</option>
+                <option value="210">Опубликовано</option>
+            </select>
+        </div>
+        <button class="search-btn" onclick="fetchData()">Показать результаты</button>
     </div>
-    <div class="input-group">
-        <span class="section-label">Наименование</span>
-        <input type="text" id="searchInput" placeholder="Например: ремонт" value="ремонт">
-    </div>
-    <div class="input-group">
-        <span class="section-label">Статус</span>
-        <select id="statusSelect">
-            <option value="350">Завершено</option>
-            <option value="210">Опубликовано</option>
-        </select>
-    </div>
-    <button class="search-btn" onclick="fetchData()">Показать результаты</button>
-</div>
-<div id="results"></div>
+    <div id="results"></div>
 
-<script>
-    async function fetchData() {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = "<p style='text-align:center'>Поиск в Goszakup...</p>";
-        
-        const filters = {
-            city: document.getElementById('cityInput').value,
-            keyword: document.getElementById('searchInput').value,
-            status: document.getElementById('statusSelect').value
-        };
-
-        try {
-            // Bilgisayarındaki yerel bota bağlanmayı dener
-            const response = await fetch('http://127.0.0.1:5000/search', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(filters)
-            });
-            const data = await response.json();
+    <script>
+        async function fetchData() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = "<p>Поиск в Goszakup...</p>"; //
             
-            resultsDiv.innerHTML = data.map(t => `
-                <div class="tender-card">
-                    <div class="price">${t.price} ₸</div>
-                    <div style="font-size:14px; margin:8px 0; font-weight:600;">${t.title}</div>
-                    <div style="font-size:12px; color:gray; border-top:1px solid #eee; padding-top:8px;">
-                        №: ${t.no} | Статус: ${t.status}
-                    </div>
-                </div>`).join('');
-        } catch (e) {
-            resultsDiv.innerHTML = "<p style='color:red; text-align:center;'>Hata: bot.py çalışmıyor! Lütfen terminali kontrol edin.</p>";
+            const filters = {
+                city: document.getElementById('cityInput').value,
+                keyword: document.getElementById('searchInput').value,
+                status: document.getElementById('statusSelect').value
+            };
+
+            try {
+                // Tarayıcı üzerinden yerel IP adresine bağlanmayı deniyoruz
+                const response = await fetch('http://127.0.0.1:5000/search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(filters)
+                });
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = data.map(t => `
+                    <div class="tender-card">
+                        <div style="color:#027A48; font-weight:800; font-size:19px;">${t.price} ₸</div>
+                        <div style="font-size:14px; margin:8px 0; font-weight:600;">${t.title}</div>
+                        <div style="font-size:12px; color:gray;">№: ${t.no} | Статус: ${t.status}</div>
+                    </div>`).join('');
+            } catch (e) {
+                // Bağlantı hatası durumunda kullanıcıya rehberlik eder
+                resultsDiv.innerHTML = "<p style='color:red; text-align:center;'>Ошибка: Пожалуйста, откройте <b>http://127.0.0.1:5000</b> yeni bir sekmede açıp 'Gelişmiş -> Siteye Git' diyerek izin verin.</p>";
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
