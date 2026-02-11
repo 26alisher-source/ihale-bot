@@ -3,16 +3,18 @@
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = "<p style='text-align:center'>Поиск в Goszakup...</p>";
         
-        const city = document.getElementById('cityInput').value;
-        const keyword = document.getElementById('searchInput').value;
-        const status = document.getElementById('statusSelect').value;
+        const filters = {
+            city: document.getElementById('cityInput').value,
+            keyword: document.getElementById('searchInput').value,
+            status: document.getElementById('statusSelect').value
+        };
 
         try {
             // Bilgisayarındaki bota bağlanır
             const response = await fetch('http://127.0.0.1:5000/search', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ city, keyword, status })
+                body: JSON.stringify(filters)
             });
             const data = await response.json();
             
@@ -20,10 +22,10 @@
                 <div style="background:white; padding:20px; border-radius:18px; margin-top:12px; border-left:6px solid #12B76A; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
                     <div style="color:#027A48; font-weight:800; font-size:19px;">${t.price} ₸</div>
                     <div style="font-size:14px; margin:8px 0; font-weight:600;">${t.title}</div>
-                    <div style="font-size:11px; color:gray;">№: ${t.no} | Статус: ${t.status}</div>
+                    <div style="font-size:11px; color:gray;">№: ${t.no} | Durum: ${t.status}</div>
                 </div>`).join('');
         } catch (e) {
-            resultsDiv.innerHTML = "<p style='color:red; text-align:center;'>Bağlantı kurulamadı. Lütfen bot.py'yi yeniden başlatın.</p>";
+            resultsDiv.innerHTML = "<p style='color:red; text-align:center;'>Bağlantı hatası! Lütfen bot.py'yi terminalden yeniden başlatın.</p>";
         }
     }
 </script>
