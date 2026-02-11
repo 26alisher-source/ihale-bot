@@ -2,37 +2,31 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alaman - Поиск объявлений</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #F2F4F7; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Inter', sans-serif; background: #F2F4F7; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .app-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 480px; }
         h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 25px; color: #101828; }
-        .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; margin-bottom: 8px; display: block; }
         .input-group { margin-bottom: 20px; }
-        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; outline: none; box-sizing: border-box; background-color: #FCFCFD; }
-        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; }
-        #results-container { width: 100%; max-width: 480px; margin-top: 20px; }
-        .tender-card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 12px; border-left: 6px solid #12B76A; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .section-label { font-size: 11px; font-weight: 700; color: #667085; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        input, select { width: 100%; padding: 14px; border: 1.5px solid #EAECF0; border-radius: 12px; font-size: 14px; box-sizing: border-box; background: #FCFCFD; }
+        .search-btn { background: #007AFF; color: white; width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .tender-card { background: white; padding: 20px; border-radius: 18px; margin-top: 12px; border-left: 6px solid #12B76A; width: 100%; max-width: 480px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .price { font-weight: 800; color: #027A48; font-size: 19px; }
-        .title { font-size: 14px; color: #344054; margin: 8px 0; font-weight: 600; }
-        .meta-info { font-size: 12px; color: #667085; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #F2F4F7; padding-top: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
-
 <div class="app-card">
     <h2>Поиск объявлений 🔍</h2>
     <div class="input-group">
         <span class="section-label">Место поставки (КАТО)</span>
-        <input type="text" id="cityInput" placeholder="Введите город" list="kato-list" value="г. Караганда">
+        <input type="text" id="cityInput" list="kato-list" placeholder="Введите город" value="г. Кызылорда">
         <datalist id="kato-list">
-            <option value="г. Астана"><option value="г. Алматы"><option value="г. Караганда">
-            <option value="г. Кызылорда"><option value="Карагандинская область">
+            <option value="г. Астана"><option value="г. Алматы"><option value="г. Караганда"><option value="г. Кызылорда">
         </datalist>
     </div>
     <div class="input-group">
-        <span class="section-label">Наименование объявления</span>
+        <span class="section-label">Наименование</span>
         <input type="text" id="searchInput" placeholder="Например: ремонт">
     </div>
     <div class="input-group">
@@ -40,4 +34,39 @@
         <select id="statusSelect">
             <option value="350">Завершено</option>
             <option value="210">Опубликовано</option>
-            <option value="220">
+        </select>
+    </div>
+    <button class="search-btn" onclick="fetchData()">Показать результаты</button>
+</div>
+<div id="results"></div>
+
+<script>
+    async function fetchData() {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = "<p>Загрузка...</p>";
+        const filters = {
+            city: document.getElementById('cityInput').value,
+            keyword: document.getElementById('searchInput').value,
+            status: document.getElementById('statusSelect').value
+        };
+        try {
+            // Bilgisayarındaki bota (Port 5000) bağlanıyor
+            const response = await fetch('http://127.0.0.1:5000/search', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(filters)
+            });
+            const data = await response.json();
+            resultsDiv.innerHTML = data.map(t => `
+                <div class="tender-card">
+                    <div class="price">${t.price} ₸</div>
+                    <div class="title" style="font-size:14px; margin:8px 0;">${t.title}</div>
+                    <div style="font-size:12px; color:gray;">№: ${t.no} | Статус: ${t.status}</div>
+                </div>`).join('');
+        } catch (e) {
+            resultsDiv.innerHTML = "<p style='color:red'>Ошибка: Убедитесь, что bot.py запущен в терминале!</p>";
+        }
+    }
+</script>
+</body>
+</html>
